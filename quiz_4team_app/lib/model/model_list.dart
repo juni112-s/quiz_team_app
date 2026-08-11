@@ -70,7 +70,6 @@ class BodyMetrics{
 class UserModel {
   String id;
   String name;
-  String? profileImage; // 프로필 사진 (옵션)
   BodyMetrics bodyMetrics; // 신체 정보
   List<TodoItem> todoList; // 할 일 리스트
   List<HabitItem> habitList; // 습관 리스트
@@ -79,7 +78,6 @@ class UserModel {
   UserModel({
     required this.id,
     required this.name,
-    this.profileImage,
     required this.bodyMetrics,
     List<TodoItem>? todoList,
     List<HabitItem>? habitList,

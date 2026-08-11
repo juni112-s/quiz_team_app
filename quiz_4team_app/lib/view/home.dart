@@ -22,20 +22,21 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
     controller =  TabController(length: 3, vsync: this);
     selectedIndex = 0;
     pages = [
+      Clinic(),
       TodoList(),
       Calendar(),
-      Clinic(),
     ];
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('asdadasd'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('asdadasd'),
+      // ),
       body: TabBarView(
         controller: controller,
         children: [
+          Clinic(),
           TodoList(),
           Calendar(),
         ],
