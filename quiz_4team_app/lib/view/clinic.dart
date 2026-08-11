@@ -1,4 +1,8 @@
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:quiz_4team_app/view/bmi.dart';
+import 'package:quiz_4team_app/view/gps/gps_map.dart';
 
 class Clinic extends StatefulWidget {
   const Clinic({super.key});
@@ -15,10 +19,6 @@ class _ClinicState extends State<Clinic> {
       {'title': 'Dermatology', 'icon': Icons.clean_hands_outlined},
       {'title': 'Medicine', 'icon': Icons.medical_services_outlined},
       {'title': 'Gynecology', 'icon': Icons.person_outline},
-      {'title': 'Odontology', 'icon': Icons.health_and_safety_outlined},
-      {'title': 'Oncology', 'icon': Icons.coronavirus_outlined},
-      {'title': 'Ophthalmology', 'icon': Icons.remove_red_eye_outlined},
-      {'title': 'Orthopedics', 'icon': Icons.accessibility_new_outlined},
     ];
     return Scaffold(
       appBar: null,
@@ -54,20 +54,26 @@ class _ClinicState extends State<Clinic> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      prefixIcon: Icon(Icons.search, color: Color(0xFF00C9C8)),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Get.to(()=>GpsMap());
+                        },
+                        icon: Icon(Icons.location_on),
+                        color: Colors.white,
+                        iconSize: 30,),
+                        SizedBox(width: 50,),
+                      IconButton(
+                        onPressed: () {
+                        Get.to(()=>Bmi());
+                        },
+                        icon: Icon(Icons.monitor),
+                        color: Colors.white,
+                        iconSize: 30,),
+                    ],
                   ),
+
                 ],
               ),
             ),
