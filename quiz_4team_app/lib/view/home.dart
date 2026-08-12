@@ -16,6 +16,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   late int selectedIndex;
   late List<Widget> pages;
   final box = GetStorage();
+  late bool button2Vible;
 
 
   @override
@@ -28,6 +29,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
       TodoList(),
       Calendar(),
     ];
+    button2Vible = false;
   }
 
 
@@ -73,7 +75,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
                 color: Colors.grey,
               ),
             ),
-            ]),
+          ]
+      ),
     );
   }
 }
