@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:quiz_4team_app/view/homes/bmi.dart';
 import 'package:quiz_4team_app/view/gps/gps_map.dart';
 
@@ -12,8 +13,17 @@ class Clinic extends StatefulWidget {
 }
 
 class _ClinicState extends State<Clinic> {
+  final box = GetStorage();
+  late String selectedGender = 'Female';
+  late double age = 26;
+  late double weight = 75;
+  late double height = 178;
+  late String selectedBloodType = 'AB +';
   late List<Map<String, dynamic>> categories;
+  late TextEditingController iDController;
+  late TextEditingController passWordController;
 
+  late bool  button2Vible;
 
 
   @override
@@ -25,7 +35,34 @@ class _ClinicState extends State<Clinic> {
       {'title': 'Medicine', 'icon': Icons.medical_services_outlined},
       {'title': 'Gynecology', 'icon': Icons.person_outline},
     ];
+
+    selectedGender = 'Female';
+    age = 26;
+    weight = 75;
+    height = 178;
+    selectedBloodType = 'AB +';
+
+    button2Vible = true;
+    iDController = TextEditingController();
+    passWordController = TextEditingController();
+    loginStorage();
   }
+
+
+  void loginStorage(){
+      box.write('user', '');
+      box.write('password', '');
+  }
+  @override
+  void dispose() {
+    box.erase();
+    super.dispose();
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,9 +170,158 @@ class _ClinicState extends State<Clinic> {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
+//             1. [로그인 성공 시 표시] 유저 건강 프로필 카드
+            Visibility(
+              visible: !button2Vible, // button2Visible이 false일 때 표시됨
+              child: Container(
+                margin: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Color(0xFFEBF7F7),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Color(0xFF00C9C8),
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // 이름 표시
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.account_circle, color: Color(0xFF00C9C8), size: 28),
+                        SizedBox(width: 8),
+                        Text(
+                          '${iDController.text.isNotEmpty ? iDController.text : "User"}님 환영합니다!',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF00C9C8),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Divider(color: Color(0xFF00C9C8), thickness: 1),
+                    SizedBox(height: 12),
+
+                    // 키, 몸무게, 혈액형 수평 정렬
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Text('키', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                            SizedBox(height: 4),
+                            Text('${height.round()} cm', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('몸무게', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                            SizedBox(height: 4),
+                            Text('${weight.round()} kg', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('혈액형', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                            SizedBox(height: 4),
+                            Text(selectedBloodType, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+              Visibility(
+              visible: button2Vible,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      controller: iDController,
+                      decoration: InputDecoration(
+                        hintText: 'ID를 입력하세요',
+                      ),
+                      keyboardType: TextInputType.text,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      controller: passWordController,
+                      decoration: InputDecoration(
+                        hintText: 'Pass Word를 입력하세요',
+                      ),
+                      keyboardType: TextInputType.text,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                button2Vible = false;
+                if(iDController.text.trim().isEmpty || passWordController.text.trim().isEmpty){
+                  errorSnackBar();
+                }else{
+                  // 비어있지 않으면 다이얼로그 출력
+                  _showDialog();
+                  
+                }setState(() {});
+              }, 
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF00C9C8),
+                foregroundColor: Colors.white,
+                shape: BeveledRectangleBorder()
+              ),
+              child: Text('Log In')
+            ),
+              ],
+            )
+          )
+        ]
+      )
+     )
     );
+  }
+
+    void errorSnackBar(){
+    Get.snackbar(
+      "경고", 
+      "사용자의 ID와 암호를 입력하세요!",
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white
+      );
+  }
+
+//============================DiaLog===============================
+  void _showDialog(){
+    Get.defaultDialog(
+      title: '환영 합니다.',
+      middleText: '확인 되었습니다.',
+      barrierDismissible: false,
+      actions: [
+        TextButton(
+          onPressed:() {
+            saveStorage();
+            //Dialog 를 종료시킨다.
+            Get.back();
+            // Dialog를 종료시키고 Secondpage 를 실행
+            // get.back 이 먼저 나온뒤 get.to를 실행시켜야한다.
+          }, 
+          child: Text('Exit'))
+      ]
+    );
+  }
+
+    void saveStorage(){
+    // write =  저장한다는 개념
+    box.write('p_userId', "3team");
+    box.write('p_password', "1234");
   }
 }
