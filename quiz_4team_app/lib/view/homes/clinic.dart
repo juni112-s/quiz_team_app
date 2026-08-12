@@ -14,59 +14,57 @@ class Clinic extends StatefulWidget {
 
 class _ClinicState extends State<Clinic> {
   final box = GetStorage();
-  late String selectedGender = 'Female';
-  late double age = 26;
-  late double weight = 75;
-  late double height = 178;
-  late String selectedBloodType = 'AB +';
-  late List<Map<String, dynamic>> categories;
   late TextEditingController iDController;
   late TextEditingController passWordController;
 
+  late double age;
+  late double weight;
+  late double height;
+
+  late String selectedGender;     // 성별
+  late String selectedBloodType;   // 혈액형
+
+//  late List<Map<String, dynamic>> categories;
   late bool  button2Vible;
 
 
   @override
   void initState() {
     super.initState();
-    categories = [
-      {'title': 'Cardiology', 'icon': Icons.favorite_border},
-      {'title': 'Dermatology', 'icon': Icons.clean_hands_outlined},
-      {'title': 'Medicine', 'icon': Icons.medical_services_outlined},
-      {'title': 'Gynecology', 'icon': Icons.person_outline},
-    ];
-
-    selectedGender = 'Female';
-    age = 26;
-    weight = 75;
-    height = 178;
-    selectedBloodType = 'AB +';
-
-    button2Vible = true;
+  bool isLoggedIn = box.read('isLoggedIn') ?? false;
+    // categories = [
+    //   {'title': 'Cardiology', 'icon': Icons.favorite_border},
+    //   {'title': 'Dermatology', 'icon': Icons.clean_hands_outlined},
+    //   {'title': 'Medicine', 'icon': Icons.medical_services_outlined},
+    //   {'title': 'Gynecology', 'icon': Icons.person_outline},
+    // ];
+    button2Vible = !isLoggedIn;
     iDController = TextEditingController();
     passWordController = TextEditingController();
     loginStorage();
+    loadData();
   }
+
+void loadData() {
+  selectedGender = box.read('gender') ?? '선택 안됨';
+  age = (box.read('age') ?? 0).toDouble();
+  weight = (box.read('weight') ?? 0).toDouble();
+  height = (box.read('height') ?? 0).toDouble();
+  selectedBloodType = box.read('bloodType') ?? '선택 안됨';
+  setState(() {});
+}
 
 
   void loginStorage(){
       box.write('user', '');
       box.write('password', '');
   }
-  @override
-  void dispose() {
-    box.erase();
-    super.dispose();
-  }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
+      
       body: Center(
         child: Column(
           children: [
@@ -100,6 +98,7 @@ class _ClinicState extends State<Clinic> {
                   ),
                   SizedBox(height: 16),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () {
@@ -108,10 +107,13 @@ class _ClinicState extends State<Clinic> {
                         icon: Icon(Icons.location_on),
                         color: Colors.white,
                         iconSize: 30,),
-                        SizedBox(width: 50,),
+                        SizedBox(width: 200,),
                       IconButton(
-                        onPressed: () {
-                        Get.to(()=>Bmi());
+                     //   onPressed: () => Get.to(Bmi())?.then((value) => loadData,),
+                        onPressed:() {
+                          Get.to(() => Bmi())?.then((value) {
+                            loadData();
+                          },);
                         },
                         icon: Icon(Icons.monitor),
                         color: Colors.white,
@@ -123,53 +125,53 @@ class _ClinicState extends State<Clinic> {
             ),
 
             // 3. GridView 영역
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    //
-                  },
-                  child: GridView.builder(
-                    itemCount: categories.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 1.15,
-                    ),
-                    itemBuilder: (context, index) {
-                      var item = categories[index];
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF00C9C8),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              item['icon'] as IconData,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 12),
-                            Text(
-                              item['title'] as String,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            // Expanded(
+            //   child: Padding(
+            //     padding: EdgeInsets.symmetric(horizontal: 20.0),
+            //     child: GestureDetector(
+            //       onTap: () {
+            //         //
+            //       },
+            //       child: GridView.builder(
+            //         itemCount: categories.length,
+            //         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //           crossAxisCount: 2,
+            //           crossAxisSpacing: 16,
+            //           mainAxisSpacing: 16,
+            //           childAspectRatio: 1.15,
+            //         ),
+            //         itemBuilder: (context, index) {
+            //           var item = categories[index];
+            //           return Container(
+            //             decoration: BoxDecoration(
+            //               color: Color(0xFF00C9C8),
+            //               borderRadius: BorderRadius.circular(20),
+            //             ),
+            //             child: Column(
+            //               mainAxisAlignment: MainAxisAlignment.center,
+            //               children: [
+            //                 Icon(
+            //                   item['icon'] as IconData,
+            //                   size: 40,
+            //                   color: Colors.white,
+            //                 ),
+            //                 SizedBox(height: 12),
+            //                 Text(
+            //                   item['title'] as String,
+            //                   style: TextStyle(
+            //                     color: Colors.white,
+            //                     fontSize: 15,
+            //                     fontWeight: FontWeight.w600,
+            //                   ),
+            //                 ),
+            //               ],
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //     ),
+            //   ),
+            // ),
 //             1. [로그인 성공 시 표시] 유저 건강 프로필 카드
             Visibility(
               visible: !button2Vible, // button2Visible이 false일 때 표시됨
@@ -264,14 +266,14 @@ class _ClinicState extends State<Clinic> {
                   SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                button2Vible = false;
-                if(iDController.text.trim().isEmpty || passWordController.text.trim().isEmpty){
-                  errorSnackBar();
-                }else{
-                  // 비어있지 않으면 다이얼로그 출력
-                  _showDialog();
-                  
-                }setState(() {});
+                if (iDController.text.trim().isNotEmpty && passWordController.text.trim().isNotEmpty) {
+                    box.write('isLoggedIn', true); // GetStorage에 로그인 성공 상태 기록
+                      button2Vible = false; // 프로필 카드로 전환
+                      _showDialog();
+                  } else {
+                    errorSnackBar();
+                  }
+                    setState(() {});
               }, 
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00C9C8),
@@ -309,19 +311,16 @@ class _ClinicState extends State<Clinic> {
         TextButton(
           onPressed:() {
             saveStorage();
-            //Dialog 를 종료시킨다.
             Get.back();
-            // Dialog를 종료시키고 Secondpage 를 실행
-            // get.back 이 먼저 나온뒤 get.to를 실행시켜야한다.
           }, 
-          child: Text('Exit'))
+          child: Text('종료'))
       ]
     );
   }
 
     void saveStorage(){
     // write =  저장한다는 개념
-    box.write('p_userId', "3team");
+    box.write('p_userId', "4team");
     box.write('p_password', "1234");
   }
 }

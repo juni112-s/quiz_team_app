@@ -1,14 +1,14 @@
 // 오늘의 할일 모델
 
 class TodoItem{
-  String id;
+  String content;
   String title;
   bool isCompleted;
   DateTime date;
 
   TodoItem({
     required this.date,
-    required this.id,
+    required this.content,
     required this.title,
     required this.isCompleted
     }
@@ -55,14 +55,15 @@ class BodyMetrics{
   double height;
   double bmi;
   String man;
+  String bloodType;
 
   BodyMetrics({
     required this.age,
     required this.bmi,
     required this.height,
     required this.weight,
-    required this.man
-
+    required this.man,
+    required this.bloodType
   });
 }
 
