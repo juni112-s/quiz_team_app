@@ -31,16 +31,16 @@ class _GpsMapState extends State<GpsMap> {
         style: TextStyle(fontSize: 12),
       ) ,
     ),
-    1 : SizedBox(                         // 1번인 둘리뮤지엄 제작
+    1 : SizedBox(                         // 1번인 강남 세브란스병원
       child:Text(
-        '둘리뮤지엄',
+        '강남 세브란스병원',
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 12),
       ) ,
     ),
-    2 : SizedBox(                         // 2번인 서대문형무소 제작
+    2 : SizedBox(                         // 2번인 강남 차병원'
       child:Text(
-        '서대문형무소역사관',
+        '강남 차병원',
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 12),
       ) ,
@@ -54,7 +54,7 @@ class _GpsMapState extends State<GpsMap> {
     kindChoice = 0;
     mapController = MapController();
     canrun = false;  // true 로 가져올 경우에 지도를 보여준다.
-    location = ['현재 위치', '둘리 뮤지엄', '서대문 형무소 역사관'];
+    location = ['현재 위치', '강남 세브란스 병원', '강남 차병원'];
     checkLocationPermission(); // 함수를 하나 가지고 온다.
   }
 
@@ -117,17 +117,17 @@ Future<void> getCurrentLocation() async {
                       17.0
                     );
                   }else if(kindChoice == 1){
-                    // 1번째 좌표값
-                    latData = 37.65243153;
-                    longData = 127.0276397;
+                    // 1번째 좌표값 강남 새브란스병원
+                    latData = 37.4928;
+                    longData = 127.0463;
                     mapController.move(
                       latlng.LatLng(latData, longData), 
                       17.0
                     );
                   }else{
-                    // 2번째 좌표값
-                    latData = 37.57244171;
-                    longData = 126.9595412;
+                    // 2번째 좌표값 강남 차병원
+                    latData = 37.485308;
+                    longData = 127.037898;
                     mapController.move(
                       latlng.LatLng(latData, longData), 
                       17.0
