@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class Bmi extends StatefulWidget {
   const Bmi({super.key});
@@ -48,10 +50,10 @@ class _BmiState extends State<Bmi> {
     }
   }
 
-  void saveRecord() {
+  // void saveRecord() {
 
-    // 저장 로직 구현 예정 위치
-  }
+  //   // 저장 로직 구현 예정 위치
+  // }
 
   // -------------------------------------------------------------
   // UI 레이아웃 빌드
@@ -315,5 +317,28 @@ class _BmiState extends State<Bmi> {
         ),
       ),
     );
+  }//build
+
+  //==============function================
+    void saveRecord() {
+      GetStorage box = GetStorage();
+
+      box.write('gender', selectedGender);
+      box.write('age', age.round());
+      box.write('weight', weight.round());
+      box.write('height', height.round());
+      box.write('bloodType', selectedBloodType);
+
+      Get.snackbar(
+        '저장 완료', 
+        '신체 정보가 정상적으로 저장되었습니다.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.blue,
+        colorText: Colors.white);
+
+        Navigator.pop(context);
   }
+  
+
+
 }

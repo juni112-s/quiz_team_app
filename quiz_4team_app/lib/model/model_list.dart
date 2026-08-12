@@ -33,18 +33,12 @@ class HabitItem{
 
 // 병원 예약 및 진료 날짜 모델
 class AppointmentItem{
-  String id;
-  String hospitalName;
-  String? department; // 진료 과목 (옵션)
+  String title;
   DateTime appointmentDateTime;
-  String? memo;
 
   AppointmentItem({
-    required this.id,
-    required this.hospitalName,
-    required this.department,
+    required this.title,
     required this.appointmentDateTime,
-    required this.memo
   });
 }
 
