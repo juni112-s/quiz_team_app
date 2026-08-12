@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({super.key});
+  Calendar({super.key});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -10,7 +10,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
 
-  // Property
+   // Property
   late DateTime covidDate;
   late DateTime tetanusDate;
   late DateTime typusDate;
@@ -33,17 +33,24 @@ class _CalendarState extends State<Calendar> {
     hpvDate = DateTime(2024, 2, 18);
     secondDoseDate = DateTime(2024, 3, 18);
     thirdDoseDate = DateTime.now();
-  }  
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.cyan,
-        foregroundColor: Colors.white,
+        backgroundColor: Color(0xFF00C9C8), // 메인 민트 색상
+        elevation: 0,
         centerTitle: true,
         title: Text(
-          'Medical Record'
+          'Medical Calendar',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Padding(
@@ -73,7 +80,7 @@ class _CalendarState extends State<Calendar> {
                 SizedBox(
                   width: 40,
                   child: Center(
-                    child: Text('D'),
+                    child: Text('Y'),
                   ),
                 ),
                 SizedBox(
@@ -85,7 +92,7 @@ class _CalendarState extends State<Calendar> {
                 SizedBox(
                   width: 40,
                   child: Center(
-                    child: Text('Y'),
+                    child: Text('D'),
                   ),
                 ),
               ],
@@ -139,7 +146,7 @@ class _CalendarState extends State<Calendar> {
                 SizedBox(
                   width: 40,
                   child: Center(
-                    child: Text('D'),
+                    child: Text('Y'),
                   ),
                 ),
                 SizedBox(
@@ -151,7 +158,7 @@ class _CalendarState extends State<Calendar> {
                 SizedBox(
                   width: 40,
                   child: Center(
-                    child: Text('Y'),
+                    child: Text('D'),
                   ),
                 ),
               ],
@@ -233,9 +240,9 @@ class _CalendarState extends State<Calendar> {
                 width: 40,
                 child: Center(
                   child: Text(
-                    date.day
+                    date.year
                         .toString()
-                        .padLeft(2, '0'),
+                        .substring(2),
                   ),
                 ),
               ),
@@ -253,9 +260,9 @@ class _CalendarState extends State<Calendar> {
                 width: 40,
                 child: Center(
                   child: Text(
-                    date.year
+                    date.day
                         .toString()
-                        .substring(2),
+                        .padLeft(2, '0'),
                   ),
                 ),
               ),

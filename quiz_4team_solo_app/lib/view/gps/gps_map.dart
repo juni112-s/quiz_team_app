@@ -58,12 +58,18 @@ class _GpsMapState extends State<GpsMap> {
     checkLocationPermission(); // 함수를 하나 가지고 온다.
   }
 
+// 함수를 실행시에는 위치 사용할지 말지 창이 뜨게끔 만들어준다.
   void checkLocationPermission()async{
+      // 창을 하나 띄우기 위한 코드 입력
     LocationPermission permission = await Geolocator.checkPermission();
     if(permission == LocationPermission.denied){
+      // 한번더 물어보는 코드
       permission = await Geolocator.requestPermission();
+      // 아무것도 하지 않겟다는 코드  (아무것도 실행하지 않을경우 나의 위치는 사용되지 않는다.)
       if(permission == LocationPermission.deniedForever)return;
     }
+    // 둘중에 하나를 고르게 되면 GPS 신호를 가져온다.
+    // GPS를 쓴다고 할때 실행할 함수를 하나 만들어준다.
     if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
       getCurrentLocation();
     }
@@ -71,12 +77,14 @@ class _GpsMapState extends State<GpsMap> {
 
 Future<void> getCurrentLocation() async {
     try {
+      // 1. 휴대폰에 기록된 마지막 위치를 먼저 가져옵니다 (수신 속도가 매우 빠름)
       Position? position = await Geolocator.getLastKnownPosition();
 
+      // 2. 마지막 위치 정보가 없을 경우에만 5초 동안 새로운 GPS 수신 시도
       position ??= await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.medium, 
-          timeLimit: Duration(seconds: 5),    
+          accuracy: LocationAccuracy.medium, // 실내에서도 수신 가능한 중간 정밀도
+          timeLimit: Duration(seconds: 5),    // 5초 지나면 자동 타임아웃
         ),
       );
 
@@ -88,11 +96,27 @@ Future<void> getCurrentLocation() async {
         canrun = true;
       });
 
-//      print("=========> lat : $latData, long : $longData===");
+      print("=========> lat : $latData, long : $longData===");
     } catch (e) {
-//      print("위치 수신 실패: $e");
+      print("위치 수신 실패: $e");
     }
   }
+
+//   void getCurrentLocation()async{
+//     // 신호를 가져올때까지 기다리는 코드
+//     Position position = await Geolocator.getCurrentPosition();
+//     // 순서를 알려주는 코드
+//     currentPosition = position;
+//     // 지도의 신호를 가져온다는 표시로 true 사용
+//     canrun = true;
+
+//     latData = currentPosition.latitude;
+//     longData = currentPosition.longitude;
+// //    print("=========> lat : $latData, long : $longData===");
+//     setState(() {});
+//   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,18 +130,20 @@ Future<void> getCurrentLocation() async {
                 groupValue: kindChoice,
                 children: segmentWidgets, 
                 onValueChanged: (value) {
+                  //위에서 만든 순서를 불러온다.
                   kindChoice = value;
-                  //현위치 표시
+                  // 현위치
                   if(kindChoice == 0){  // (0 번째의 위치 나의 위치)
                     getCurrentLocation();
                     latData = currentPosition.latitude;
                     longData = currentPosition.longitude;
+                    // 지도가 움직이게 해주는 기능
                     mapController.move(
                       latlng.LatLng(latData, longData), 
                       17.0
                     );
                   }else if(kindChoice == 1){
-                    // 1번째 좌표값
+                    // 좌표값 입력 (1 번째의 위치 둘리 뮤지엄)
                     latData = 37.65243153;
                     longData = 127.0276397;
                     mapController.move(
@@ -125,7 +151,7 @@ Future<void> getCurrentLocation() async {
                       17.0
                     );
                   }else{
-                    // 2번째 좌표값
+                    // 좌표값 입력 (2 번째의 위치 서대문 형문소 역사관)
                     latData = 37.57244171;
                     longData = 126.9595412;
                     mapController.move(
@@ -149,10 +175,6 @@ Future<void> getCurrentLocation() async {
       : Center(child: CircularProgressIndicator(),),
     );
   }// build
-
-
-
-  // ========================Fuction====================================
   Widget flutterMap(){
     return FlutterMap(
       mapController: mapController,

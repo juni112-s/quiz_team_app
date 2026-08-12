@@ -49,6 +49,7 @@ class _BmiState extends State<Bmi> {
   }
 
   void saveRecord() {
+
     // 저장 로직 구현 예정 위치
   }
 
@@ -96,9 +97,9 @@ class _BmiState extends State<Bmi> {
                   buildGenderButton('Other'),
                 ],
               ),
-
               SizedBox(height: 28),
 
+              
               // 2. 나이 슬라이더 (How old are you)
               Text(
                 'How old are you',
