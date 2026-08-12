@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import '../../model/model_list.dart';
+import 'calendar_second.dart';
 
 class Calendar extends StatefulWidget {
   Calendar({super.key});
@@ -9,271 +12,86 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-
-   // Property
-  late DateTime covidDate;
-  late DateTime tetanusDate;
-  late DateTime typusDate;
-  late DateTime hepatitisDate;
-
-  late DateTime hpvDate;
-  late DateTime secondDoseDate;
-  late DateTime thirdDoseDate;
-
-
-  @override
-  void initState() {
-    super.initState();
-
-    covidDate = DateTime(2020, 8, 18);
-    tetanusDate = DateTime(2019, 2, 9);
-    typusDate = DateTime(2018, 6, 22);
-    hepatitisDate = DateTime(2017, 9, 15);
-
-    hpvDate = DateTime(2024, 2, 18);
-    secondDoseDate = DateTime(2024, 3, 18);
-    thirdDoseDate = DateTime.now();
-  }
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Color(0xFF00C9C8), // 메인 민트 색상
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Medical Calendar',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Vaccinations',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 30,),
-
-            Divider(),
-
-            Row(
-              children: [
-                SizedBox(
-                  width: 180,
-                  child: Text(
-                    'Immunisation history',
-                  ),
-                ),
-                SizedBox(
-                  width: 40,
-                  child: Center(
-                    child: Text('Y'),
-                  ),
-                ),
-                SizedBox(
-                  width: 40,
-                  child: Center(
-                    child: Text('M'),
-                  ),
-                ),
-                SizedBox(
-                  width: 40,
-                  child: Center(
-                    child: Text('D'),
-                  ),
-                ),
-              ],
-            ),
-
-            Divider(),
-
-            dateSearch(
-              'Covid',
-              covidDate,
-              (value) {
-                covidDate = value;
-              },
-            ),
-            SizedBox(height: 15),
-            dateSearch(
-              'Tetanus',
-              tetanusDate,
-              (value) {
-                tetanusDate = value;
-              },
-            ),
-            SizedBox(height: 15),
-            dateSearch(
-              'Typus',
-              typusDate,
-              (value) {
-                typusDate = value;
-              },
-            ),
-            SizedBox(height: 15),
-            dateSearch(
-              'Hepatitis',
-              hepatitisDate,
-              (value) {
-                hepatitisDate = value;
-              },
-            ),
-            SizedBox(height: 50,),
-
-            Divider(),
-
-            Row(
-              children: [
-                SizedBox(
-                  width: 180,
-                  child: Text(
-                    'Next Immunisations due',
-                  ),
-                ),
-                SizedBox(
-                  width: 40,
-                  child: Center(
-                    child: Text('Y'),
-                  ),
-                ),
-                SizedBox(
-                  width: 40,
-                  child: Center(
-                    child: Text('M'),
-                  ),
-                ),
-                SizedBox(
-                  width: 40,
-                  child: Center(
-                    child: Text('D'),
-                  ),
-                ),
-              ],
-            ),
-
-            Divider(),
-
-            dateSearch(
-              'Human Papillomavirus (HPV)',
-              hpvDate,
-              (value) {
-                hpvDate = value;
-              },
-            ),
-            SizedBox(height: 15),
-            dateSearch(
-              'Second Dose',
-              secondDoseDate,
-              (value) {
-                secondDoseDate = value;
-              },
-            ),
-            SizedBox(height: 15),
-            dateSearch(
-              'Third Dose',
-              thirdDoseDate,
-              (value) {
-                thirdDoseDate = value;
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  } // build
-
-
-  // --- Functions ---
-
-  Widget dateSearch(
-    String title,
-    DateTime date,
-    Function(DateTime) changeDate,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 180,
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            showCupertinoModalPopup(
-              context: context,
-              builder: (context) {
-                return Container(
-                  height: 250,
-                  color: Colors.white,
-                  child: CupertinoDatePicker(
-                    mode: CupertinoDatePickerMode.date,
-                    initialDateTime: date,
-                    onDateTimeChanged: (value) {
-                      changeDate(value);
-                      setState(() {});
-                    },
-                  ),
-                );
-              },
-            );
-          },
-          child: Row(
+  void showCupertinoDateChanger(VaccinationModel item) {
+    // 명세 7: 클릭 시 CupertinoDatePicker 스낵바/바텀시트 오픈
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        DateTime tempDate = DateTime.now();
+        return Container(
+          height: 250,
+          color: Colors.white,
+          child: Column(
             children: [
               SizedBox(
-                width: 40,
-                child: Center(
-                  child: Text(
-                    date.year
-                        .toString()
-                        .substring(2),
-                  ),
+                height: 180,
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  onDateTimeChanged: (DateTime newDate) {
+                    tempDate = newDate;
+                  },
                 ),
               ),
-              SizedBox(
-                width: 40,
-                child: Center(
-                  child: Text(
-                    date.month
-                        .toString()
-                        .padLeft(2, '0'),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 40,
-                child: Center(
-                  child: Text(
-                    date.day
-                        .toString()
-                        .padLeft(2, '0'),
-                  ),
-                ),
+              ElevatedButton(
+                onPressed: () {
+                  String formatted = '${tempDate.year}년 ${tempDate.month}월 ${tempDate.day}일';
+                  AppModel.updateVaccinationDate(item.id, formatted);
+                  Get.back();
+                  setState(() {});
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF00C9C8)),
+                child: Text('날짜 변경 완료', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
-        ),
-      ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool loggedIn = AppModel.isLoggedIn();
+    List<VaccinationModel> list = AppModel.getVaccinations();
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF00C9C8),
+        title: Text('Medical Calendar', style: TextStyle(color: Colors.white)),
+        actions: [
+          if (loggedIn)
+            IconButton(
+              icon: Icon(Icons.add, color: Colors.white),
+              onPressed: () async {
+                await Get.to(() => CalendarSecond());
+                setState(() {});
+              },
+            ),
+        ],
+      ),
+      body: !loggedIn
+          ? Center(
+              child: Text(
+                '로그인되지 않은 유저거나\n유저 데이터를 가져오는 데에 실패했습니다.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey, fontSize: 16),
+              ),
+            )
+          : ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                var item = list[index];
+                return ListTile(
+                  onTap: () => showCupertinoDateChanger(item),
+                  title: Text(item.title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(item.date),
+                  trailing: Icon(
+                    item.isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+                    color: item.isCompleted ? Color(0xFF00C9C8) : Colors.grey,
+                  ),
+                );
+              },
+            ),
     );
   }
 }
-
-
-///// 11시 50분 수정
