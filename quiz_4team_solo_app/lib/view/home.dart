@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:quiz_4team_app/view/calendar/calendar.dart';
 import 'package:quiz_4team_app/view/homes/clinic.dart';
 import 'package:quiz_4team_app/view/todo_list/todo_list.dart';
@@ -15,7 +14,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   late TabController controller;
   late int selectedIndex;
   late List<Widget> pages;
-  final box = GetStorage();
 
 
   @override
@@ -29,15 +27,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
       Calendar(),
     ];
   }
-
-
-    @override
-  void dispose() {
-    box.erase();
-    super.dispose();
-  }
-
-   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
