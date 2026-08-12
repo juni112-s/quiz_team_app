@@ -101,7 +101,7 @@ class _CalendarState extends State<Calendar> {
             Divider(),
 
             dateSearch(
-              'Covid',
+              '독감 접종일',
               covidDate,
               (value) {
                 covidDate = value;
@@ -109,7 +109,7 @@ class _CalendarState extends State<Calendar> {
             ),
             SizedBox(height: 15),
             dateSearch(
-              'Tetanus',
+              '파상풍 접종일',
               tetanusDate,
               (value) {
                 tetanusDate = value;
@@ -117,7 +117,7 @@ class _CalendarState extends State<Calendar> {
             ),
             SizedBox(height: 15),
             dateSearch(
-              'Typus',
+              'A형 간염 접종일',
               typusDate,
               (value) {
                 typusDate = value;
@@ -125,7 +125,7 @@ class _CalendarState extends State<Calendar> {
             ),
             SizedBox(height: 15),
             dateSearch(
-              'Hepatitis',
+              'B형 간염 접종일',
               hepatitisDate,
               (value) {
                 hepatitisDate = value;
@@ -167,7 +167,7 @@ class _CalendarState extends State<Calendar> {
             Divider(),
 
             dateSearch(
-              'Human Papillomavirus (HPV)',
+              'HPV 접종 예정일',
               hpvDate,
               (value) {
                 hpvDate = value;
@@ -175,7 +175,7 @@ class _CalendarState extends State<Calendar> {
             ),
             SizedBox(height: 15),
             dateSearch(
-              'Second Dose',
+              '독감 접종 예정일',
               secondDoseDate,
               (value) {
                 secondDoseDate = value;
@@ -183,7 +183,7 @@ class _CalendarState extends State<Calendar> {
             ),
             SizedBox(height: 15),
             dateSearch(
-              'Third Dose',
+              '파상풍 접종 예정일',
               thirdDoseDate,
               (value) {
                 thirdDoseDate = value;
