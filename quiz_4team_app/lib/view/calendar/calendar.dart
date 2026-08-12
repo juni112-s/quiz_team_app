@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class Calendar extends StatefulWidget {
   Calendar({super.key});
@@ -8,30 +9,33 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  // 현재 선택된 연도, 월, 일
-  
-  int currentYear = 2026;
-  int currentMonth = 8;
-  int selectedDay = 11;
 
-  // 요일 표시 텍스트
-  List<String> weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+   // Property
+  late DateTime covidDate;
+  late DateTime tetanusDate;
+  late DateTime typusDate;
+  late DateTime hepatitisDate;
 
-  // 예방접종 및 의료 일정 샘플 데이터 (날짜별)
-  Map<int, List<Map<String, String>>> scheduleData = {
-    8: [
-      {'title': 'HPV 3차 접종', 'category': '예방접종', 'time': '10:30 AM'},
-    ],
-    11: [
-      {'title': '내과 정기 검진', 'category': '병원진료', 'time': '02:00 PM'},
-    ],
-    18: [
-      {'title': '코로나 백신 추가접종', 'category': '예방접종', 'time': '11:00 AM'},
-    ],
-    25: [
-      {'title': '파상풍(Tetanus) 주사', 'category': '예방접종', 'time': '03:30 PM'},
-    ],
-  };
+  late DateTime hpvDate;
+  late DateTime secondDoseDate;
+  late DateTime thirdDoseDate;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    covidDate = DateTime(2020, 8, 18);
+    tetanusDate = DateTime(2019, 2, 9);
+    typusDate = DateTime(2018, 6, 22);
+    hepatitisDate = DateTime(2017, 9, 15);
+
+    hpvDate = DateTime(2024, 2, 18);
+    secondDoseDate = DateTime(2024, 3, 18);
+    thirdDoseDate = DateTime.now();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -50,198 +54,226 @@ class _CalendarState extends State<Calendar> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          // 1. 연도 및 월 선택 컨트롤러
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            color: Color(0xFFEBF7F7),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Vaccinations',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 30,),
+
+            Divider(),
+
+            Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back_ios, size: 18, color: Color(0xFF00C9C8)),
-                  onPressed: () {
-                    setState(() {
-                      if (currentMonth > 1) {
-                        currentMonth--;
-                      } else {
-                        currentMonth = 12;
-                        currentYear--;
-                      }
-                    });
-                  },
-                ),
-                Text(
-                  '$currentYear년 $currentMonth월',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF00C9C8),
+                SizedBox(
+                  width: 180,
+                  child: Text(
+                    'Immunisation history',
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.arrow_forward_ios, size: 18, color: Color(0xFF00C9C8)),
-                  onPressed: () {
-                      if (currentMonth < 12) {
-                        currentMonth++;
-                      } else {
-                        currentMonth = 1;
-                        currentYear++;
-                      }
-                    setState(() {});
-                  },
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: Text('Y'),
+                  ),
+                ),
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: Text('M'),
+                  ),
+                ),
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: Text('D'),
+                  ),
                 ),
               ],
             ),
-          ),
 
-          // 2. 요일 표시 바 (일 ~ 토)
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: weekDays.map((day) {
-                return SizedBox(
-                  width: 35,
+            Divider(),
+
+            dateSearch(
+              'Covid',
+              covidDate,
+              (value) {
+                covidDate = value;
+              },
+            ),
+            SizedBox(height: 15),
+            dateSearch(
+              'Tetanus',
+              tetanusDate,
+              (value) {
+                tetanusDate = value;
+              },
+            ),
+            SizedBox(height: 15),
+            dateSearch(
+              'Typus',
+              typusDate,
+              (value) {
+                typusDate = value;
+              },
+            ),
+            SizedBox(height: 15),
+            dateSearch(
+              'Hepatitis',
+              hepatitisDate,
+              (value) {
+                hepatitisDate = value;
+              },
+            ),
+            SizedBox(height: 50,),
+
+            Divider(),
+
+            Row(
+              children: [
+                SizedBox(
+                  width: 180,
                   child: Text(
-                    day,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: day == '일' ? Colors.red : (day == '토' ? Colors.blue : Colors.black),
-                    ),
+                    'Next Immunisations due',
                   ),
-                );
-              }).toList(),
+                ),
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: Text('Y'),
+                  ),
+                ),
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: Text('M'),
+                  ),
+                ),
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: Text('D'),
+                  ),
+                ),
+              ],
+            ),
+
+            Divider(),
+
+            dateSearch(
+              'Human Papillomavirus (HPV)',
+              hpvDate,
+              (value) {
+                hpvDate = value;
+              },
+            ),
+            SizedBox(height: 15),
+            dateSearch(
+              'Second Dose',
+              secondDoseDate,
+              (value) {
+                secondDoseDate = value;
+              },
+            ),
+            SizedBox(height: 15),
+            dateSearch(
+              'Third Dose',
+              thirdDoseDate,
+              (value) {
+                thirdDoseDate = value;
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  } // build
+
+
+  // --- Functions ---
+
+  Widget dateSearch(
+    String title,
+    DateTime date,
+    Function(DateTime) changeDate,
+  ) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 180,
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
             ),
           ),
-
-          // 3. 달력 그리드 영역
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 31, // 31일 기준
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-              ),
-              itemBuilder: (context, index) {
-                int day = index + 1;
-                bool isSelected = day == selectedDay;
-                bool hasEvent = scheduleData.containsKey(day);
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedDay = day;
-                    });
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? Color(0xFF00C9C8)
-                          : (hasEvent ? Color(0xFFEBF7F7) : Colors.transparent),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: hasEvent ? Color(0xFF00C9C8) : Colors.transparent,
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '$day',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: isSelected || hasEvent ? FontWeight.bold : FontWeight.normal,
-                            color: isSelected ? Colors.white : Colors.black,
-                          ),
-                        ),
-                        if (hasEvent)
-                          Container(
-                            margin: EdgeInsets.only(top: 4),
-                            width: 5,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              color: isSelected ? Colors.white : Color(0xFF00C9C8),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                      ],
-                    ),
+        ),
+        GestureDetector(
+          onTap: () {
+            showCupertinoModalPopup(
+              context: context,
+              builder: (context) {
+                return Container(
+                  height: 250,
+                  color: Colors.white,
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.date,
+                    initialDateTime: date,
+                    onDateTimeChanged: (value) {
+                      changeDate(value);
+                      setState(() {});
+                    },
                   ),
                 );
               },
-            ),
-          ),
-
-          SizedBox(height: 12),
-          Divider(thickness: 1, color: Colors.grey.shade200),
-
-          // 4. 선택된 날짜의 일정 표시 영역
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$currentMonth월 $selectedDay일 일정',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+            );
+          },
+          child: Row(
+            children: [
+              SizedBox(
+                width: 40,
+                child: Center(
+                  child: Text(
+                    date.year
+                        .toString()
+                        .substring(2),
                   ),
-                  SizedBox(height: 10),
-                  Expanded(
-                    child: (scheduleData[selectedDay] != null &&
-                            scheduleData[selectedDay]!.isNotEmpty)
-                        ? ListView.builder(
-                            itemCount: scheduleData[selectedDay]!.length,
-                            itemBuilder: (context, index) {
-                              var event = scheduleData[selectedDay]![index];
-                              return Card(
-                                elevation: 0,
-                                color: Color(0xFFEBF7F7),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: ListTile(
-                                  leading: Icon(
-                                    Icons.medical_information,
-                                    color: Color(0xFF00C9C8),
-                                  ),
-                                  title: Text(
-                                    event['title']!,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  subtitle: Text('${event['category']} • ${event['time']}'),
-                                ),
-                              );
-                            },
-                          )
-                        : Center(
-                            child: Text(
-                              '등록된 일정이 없습니다.',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              SizedBox(
+                width: 40,
+                child: Center(
+                  child: Text(
+                    date.month
+                        .toString()
+                        .padLeft(2, '0'),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 40,
+                child: Center(
+                  child: Text(
+                    date.day
+                        .toString()
+                        .padLeft(2, '0'),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
+
+
+///// 11시 50분 수정
