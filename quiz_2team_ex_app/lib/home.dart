@@ -114,10 +114,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         )
                       : Text(
                           '환영합니다, ${currentUser!.userID}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                 ],
               ),
@@ -134,22 +131,32 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           () => Get.to(Mypage(), arguments: currentUser),
                         ),
                         const SizedBox(height: 10),
-                        _buildMenuButton(
-                          Icons.star_outline,
-                          '리뷰 작성',
-                          () => Get.to(
+                        _buildMenuButton(Icons.star_outline, '리뷰 작성', () {
+                          Get.to(
                             ReviewAddPage(),
                             arguments: currentUser!.userID,
-                          ),
-                        ),
+                          )!.then((value) {
+                            if (value != null) {
+                              currentUser!.reviewList.add(value);
+                              setState(() {});
+                            }
+                          });
+                        }),
                         const SizedBox(height: 10),
                         _buildMenuButton(
                           Icons.confirmation_number_outlined,
                           '예매하기',
-                          () => Get.to(
-                            ReservationAddPage(),
-                            arguments: currentUser!.userID,
-                          ),
+                          () {
+                            Get.to(
+                              ReservationAddPage(),
+                              arguments: currentUser!.userID,
+                            )!.then((value) {
+                              if (value != null) {
+                                currentUser!.reservationList.add(value);
+                                setState(() {});
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
