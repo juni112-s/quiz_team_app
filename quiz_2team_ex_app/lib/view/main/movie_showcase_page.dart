@@ -97,7 +97,7 @@ class _MovieShowcasePageState extends State<MovieShowcasePage> {
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () {
-                    // 리뷰 보기 클릭 시 동작
+                    Get.to(MovieDetailPage(), arguments: selectedMovie);
                   },
                   icon: const Icon(Icons.chat_bubble_outline),
                   label: const Text('리뷰 보기'),

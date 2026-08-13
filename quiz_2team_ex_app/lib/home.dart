@@ -112,10 +112,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             ),
                           ],
                         )
-                      : Text(
-                          '환영합니다, ${currentUser!.userID}',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
+                      : Column(
+                        mainAxisAlignment: .start,
+                        children: [
+                          Text(
+                              '환영합니다, ${currentUser!.userID}',
+                              style: TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                currentUser = null;
+                                setState(() {});
+                              }, 
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.grey
+                              ),
+                              child: Text('로그아웃')
+                            )
+                        ],
+                      ),
                 ],
               ),
             ),
