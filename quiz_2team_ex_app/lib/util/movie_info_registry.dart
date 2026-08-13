@@ -1,0 +1,92 @@
+import '../model/movie_info.dart';
+
+class MovieInfoRegistry {
+  static List<String> genres = [
+    '액션',
+    '공포/스릴러',
+    '로맨스',
+  ];
+  static List<MovieInfo> movies = [
+    MovieInfo(
+      imageRoute: 'images/abouttime.png',
+      firstReleaseDate: DateTime(2013, 12, 5),
+      title: '어바웃 타임',
+      genre: 2,
+      runTimeInMinutes: 123,
+      mainActor: '도널 글리슨',
+      director: '리차드 커티스',
+    ),
+    MovieInfo(
+      imageRoute: 'images/backroom.png',
+      firstReleaseDate: DateTime(2026, 5, 27),
+      title: '백룸',
+      genre: 1,
+      runTimeInMinutes: 127,
+      mainActor: '치웨텔 에지오포',
+      director: '케인 파슨스',
+    ),
+    MovieInfo(
+      imageRoute: 'images/getout.png',
+      firstReleaseDate: DateTime(2017, 5, 17),
+      title: '겟 아웃',
+      genre: 1,
+      runTimeInMinutes: 104,
+      mainActor: '다니엘 칼루야',
+      director: '조던 필',
+    ),
+    MovieInfo(
+      imageRoute: 'images/odyssey.png',
+      firstReleaseDate: DateTime(2026, 8, 5),
+      title: '오디세이',
+      genre: 0,
+      runTimeInMinutes: 172,
+      mainActor: '멧 데이먼',
+      director: '크리스토퍼 놀란',
+    ),
+    MovieInfo(
+      imageRoute: 'images/oncewewereus.png',
+      firstReleaseDate: DateTime(2025, 12, 31),
+      title: '만약에 우리',
+      genre: 2,
+      runTimeInMinutes: 115,
+      mainActor: '구교환',
+      director: '김도영',
+    ),
+    MovieInfo(
+      imageRoute: 'images/salmokji.png',
+      firstReleaseDate: DateTime(2026, 4, 8),
+      title: '살목지',
+      genre: 1,
+      runTimeInMinutes: 95,
+      mainActor: '김혜윤',
+      director: '이상민',
+    ),
+    MovieInfo(
+      imageRoute: 'images/spiderman.png',
+      firstReleaseDate: DateTime(2026, 7, 29),
+      title: '스파이더맨 브랜드 뉴 데이',
+      genre: 0,
+      runTimeInMinutes: 145,
+      mainActor: '톰 홀랜드',
+      director: '데스틴 크리튼',
+    ),
+    MovieInfo(
+      imageRoute: 'images/theoutlaws.png',
+      firstReleaseDate: DateTime(2024, 4, 24),
+      title: '범죄도시4',
+      genre: 0,
+      runTimeInMinutes: 109,
+      mainActor: '마동석',
+      director: '허명행',
+    ),
+    MovieInfo(
+      imageRoute: 'images/titanic.png',
+      firstReleaseDate: DateTime(1998, 2, 20),
+      title: '타이타닉',
+      genre: 2,
+      runTimeInMinutes: 195,
+      mainActor: '레오나르도 디카프리오',
+      director: '제임스 카메론',
+    ),
+  ];
+}
