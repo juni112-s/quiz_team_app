@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../model/moviename.dart'; // MovieInfo 모델 경로 확인
+import '../model/moviename.dart';
 
 class Actionpage extends StatefulWidget {
   const Actionpage({super.key});
@@ -10,7 +10,7 @@ class Actionpage extends StatefulWidget {
 
 class _ActionpageState extends State<Actionpage> {
   late List<MovieInfo> actionMovies;
-  late PageController pageController; // 스와이프 제어용 컨트롤러
+  late PageController pageController;
   int current = 0;
 
   @override
@@ -18,7 +18,6 @@ class _ActionpageState extends State<Actionpage> {
     super.initState();
     pageController = PageController();
 
-    // 액션 영화 목록 데이터
     actionMovies = [
       MovieInfo(
         imageRoute: "images/spiderman.png",
@@ -58,20 +57,24 @@ class _ActionpageState extends State<Actionpage> {
 
   @override
   Widget build(BuildContext context) {
+    if (actionMovies.isEmpty) {
+      return const Scaffold(
+        body: Center(child: Text('영화 데이터가 없습니다.')),
+      );
+    }
+
     return Scaffold(
-      // ⭐️ PageView를 사용하면 좌우 슬라이드 시 사진과 제목이 동시에 함께 넘어갑니다.
       body: PageView.builder(
         controller: pageController,
         itemCount: actionMovies.length,
         onPageChanged: (index) {
           setState(() {
-            current = index; // 페이지가 바뀔 때 현재 인덱스 업데이트
+            current = index;
           });
         },
         itemBuilder: (context, index) {
           MovieInfo movie = actionMovies[index];
 
-          // 개봉일 포맷팅 (YYYY.MM.DD)
           String releaseDateStr =
               "${movie.firstReleaseDate.year}.${movie.firstReleaseDate.month.toString().padLeft(2, '0')}.${movie.firstReleaseDate.day.toString().padLeft(2, '0')}";
 
@@ -82,19 +85,27 @@ class _ActionpageState extends State<Actionpage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // 1. 영화 포스터 사진
+                    // 포스터 이미지
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.asset(
-                        movie.imageRoute, // 포스터 사진
+                        movie.imageRoute,
                         width: 250,
                         height: 360,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 250,
+                            height: 360,
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.movie, size: 80, color: Colors.grey),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 16),
 
-                    // 2. 영화 제목 및 배우/개봉일 박스 (사진과 함께 변경됨)
+                    // 제목 및 정보 박스
                     Container(
                       width: 250,
                       padding: const EdgeInsets.all(12),
@@ -105,7 +116,7 @@ class _ActionpageState extends State<Actionpage> {
                       child: Column(
                         children: [
                           Text(
-                            movie.title, // 영화 제목
+                            movie.title,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -124,11 +135,10 @@ class _ActionpageState extends State<Actionpage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // 3. 하단 버튼 영역 (리뷰 보기 & 이전/다음 화살표)
+                    // 버튼 영역
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // 이전 영화 버튼
                         IconButton(
                           onPressed: current > 0
                               ? () {
@@ -141,11 +151,9 @@ class _ActionpageState extends State<Actionpage> {
                           icon: const Icon(Icons.arrow_back_ios),
                           color: Colors.deepPurple,
                         ),
-                        
-                        // 리뷰 보기 버튼
                         ElevatedButton.icon(
                           onPressed: () {
-                            // 리뷰 보기 클릭 시 동작
+                            
                           },
                           icon: const Icon(Icons.chat_bubble_outline),
                           label: const Text('리뷰 보기'),
@@ -155,8 +163,6 @@ class _ActionpageState extends State<Actionpage> {
                             shape: const StadiumBorder(),
                           ),
                         ),
-
-                        // 다음 영화 버튼
                         IconButton(
                           onPressed: current < actionMovies.length - 1
                               ? () {
