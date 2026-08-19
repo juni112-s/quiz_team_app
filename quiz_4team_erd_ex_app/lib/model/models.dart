@@ -132,8 +132,21 @@ class Course {
     Course(courseCode: 'SW301', deptCode: 'SWE', courseName: '소프트웨어공학', credits: 3, syllabus: '애자일 방법론, 디자인 패턴 및 소프트웨어 아키텍처'),
   ];
 
+  // ⭕ 1. 선수과목 목록 (이 과목을 듣기 위해 먼저 들어야 하는 과목)
   List<Prerequisite> get prerequisites =>
       Prerequisite.list.where((p) => p.courseCode == courseCode).toList();
+
+  // ⭕ 2. 후수과목 목록 (이 과목을 이수하면 들을 수 있는 후속 과목)
+  List<Prerequisite> get subsequentCourses =>
+      Prerequisite.list.where((p) => p.prereqCode == courseCode).toList();
+
+  // ⭕ 3. 과목 이수 단계 구분 (기초 / 중간 연계 / 심화)
+  String get courseLevelTag {
+    if (prerequisites.isEmpty && subsequentCourses.isNotEmpty) return "기초과목";
+    if (prerequisites.isNotEmpty && subsequentCourses.isNotEmpty) return "연계과목";
+    if (prerequisites.isNotEmpty && subsequentCourses.isEmpty) return "심화과목";
+    return "일반과목";
+  }
 }
 
 // 6. 강의 시간표 모델
@@ -206,7 +219,7 @@ class CourseSection {
   String get classroomString => schedules.isNotEmpty ? schedules.first.classroom : '';
 }
 
-// 8. 수강신청 모델
+// 8. 수강신청 모델 (선수과목 이수 검증 로직 추가)
 class Enrollment {
   final int enrollmentId;
   final String studentId;
@@ -229,12 +242,30 @@ class Enrollment {
   });
 
   static List<Enrollment> list = [
+    // [강동원 20231001] CS101(컴퓨팅사고) 수강완료 기록 보유 -> CS201(자료구조), AI201(인공지능개론) 신청 가능!
     Enrollment(enrollmentId: 40001, studentId: '20231001', sectionCode: 'SEC2605', applyDate: '2025-08-20', status: '수강완료', waitOrder: 0, isRetake: 'N', grade: 'B+'),
     Enrollment(enrollmentId: 50001, studentId: '20231001', sectionCode: 'SEC2601', applyDate: '2026-02-18', status: '수강중', waitOrder: 0, isRetake: 'N'),
     Enrollment(enrollmentId: 50002, studentId: '20231001', sectionCode: 'SEC2603', applyDate: '2026-02-18', status: '수강중', waitOrder: 0, isRetake: 'N'),
-    Enrollment(enrollmentId: 50003, studentId: '20231002', sectionCode: 'SEC2602', applyDate: '2026-02-18', status: '수강중', waitOrder: 0, isRetake: 'N'),
+    
+    // [이지은 20231002] CS302(데이터베이스) 수강완료 기록 보유
+    Enrollment(enrollmentId: 40003, studentId: '20231002', sectionCode: 'SEC2603', applyDate: '2025-08-20', status: '수강완료', waitOrder: 0, isRetake: 'N', grade: 'B0'),
   ];
 
+  // ⭕ 특정 학생이 특정 과목(courseCode)을 이수(수강완료)했는지 여부
+  static bool isCoursePassed(String studentId, String courseCode) {
+    return list.any((e) =>
+        e.studentId == studentId &&
+        e.section.courseCode == courseCode &&
+        e.status == '수강완료');
+  }
+
+  // ⭕ 필수 선수과목 중 아직 이수하지 않은 미이수 과목 목록 반환
+  static List<Prerequisite> getMissingPrerequisites(String studentId, String targetCourseCode) {
+    final prereqs = Prerequisite.list.where((p) => p.courseCode == targetCourseCode && p.isMandatory == 'Y').toList();
+    return prereqs.where((p) => !isCoursePassed(studentId, p.prereqCode)).toList();
+  }
+
+  // ⭕ 재수강 이력 검사
   static bool hasPassedCourse(String studentId, String courseCode) {
     return list.any((e) =>
         e.studentId == studentId &&
@@ -242,6 +273,7 @@ class Enrollment {
         (e.status == '수강완료' || e.isRetake == 'Y'));
   }
 
+  // ⭕ 수강신청 함수
   static bool apply(String studentId, String sectionCode, {String isRetake = 'N'}) {
     final already = list.any((e) => e.studentId == studentId && e.sectionCode == sectionCode && e.status == '수강중');
     if (already) return false;
@@ -263,6 +295,7 @@ class Enrollment {
     return true;
   }
 
+  // ⭕ 수강취소 함수
   static void cancel(String studentId, String sectionCode) {
     final sec = CourseSection.list.firstWhere((s) => s.sectionCode == sectionCode);
     if (sec.enrolled > 0) sec.enrolled--;
@@ -271,7 +304,6 @@ class Enrollment {
 
   CourseSection get section => CourseSection.list.firstWhere((s) => s.sectionCode == sectionCode);
 }
-
 // 9. 과목 자료 모델
 class CourseMaterial {
   final int id;
@@ -304,4 +336,67 @@ class CourseMaterial {
       uploadDate: '2026-03-05',
     ),
   ];
+}
+
+// 10. 수강신청 일정 모델 (학년별 수강신청 기간 관리)
+class RegistrationPeriod {
+  final int targetGrade; // 0이면 전학년(정정기간)
+  final String gradeLabel;
+  final String periodText;
+  final DateTime startDate;
+  final DateTime endDate;
+
+  RegistrationPeriod({
+    required this.targetGrade,
+    required this.gradeLabel,
+    required this.periodText,
+    required this.startDate,
+    required this.endDate,
+  });
+
+  static List<RegistrationPeriod> list = [
+    RegistrationPeriod(
+      targetGrade: 4,
+      gradeLabel: '4학년 우선 수강신청',
+      periodText: '2026.08.18 (화) 10:00 ~ 17:00',
+      startDate: DateTime(2026, 8, 18, 10, 0),
+      endDate: DateTime(2026, 8, 18, 17, 0),
+    ),
+    RegistrationPeriod(
+      targetGrade: 3,
+      gradeLabel: '3학년 수강신청',
+      periodText: '2026.08.19 (수) 10:00 ~ 17:00',
+      startDate: DateTime(2026, 8, 19, 10, 0),
+      endDate: DateTime(2026, 8, 19, 17, 0),
+    ),
+    RegistrationPeriod(
+      targetGrade: 2,
+      gradeLabel: '2학년 수강신청',
+      periodText: '2026.08.20 (목) 10:00 ~ 17:00',
+      startDate: DateTime(2026, 8, 20, 10, 0),
+      endDate: DateTime(2026, 8, 20, 17, 0),
+    ),
+    RegistrationPeriod(
+      targetGrade: 1,
+      gradeLabel: '1학년 및 신입생 수강신청',
+      periodText: '2026.08.21 (금) 10:00 ~ 17:00',
+      startDate: DateTime(2026, 8, 21, 10, 0),
+      endDate: DateTime(2026, 8, 21, 17, 0),
+    ),
+    RegistrationPeriod(
+      targetGrade: 0,
+      gradeLabel: '전체 학년 수강신청 및 정정기간',
+      periodText: '2026.08.24 (월) 10:00 ~ 08.26 (수) 18:00',
+      startDate: DateTime(2026, 8, 24, 10, 0),
+      endDate: DateTime(2026, 8, 26, 18, 0),
+    ),
+  ];
+
+  // 특정 학생의 학년 기준 수강신청 일정 가져오기
+  static RegistrationPeriod getPeriodForStudent(int grade) {
+    return list.firstWhere(
+      (p) => p.targetGrade == grade,
+      orElse: () => list.last, // 기본값: 전체 학년 정정기간
+    );
+  }
 }
