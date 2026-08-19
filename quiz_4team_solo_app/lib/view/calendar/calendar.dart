@@ -82,14 +82,13 @@ class _CalendarState extends State<Calendar> {
                 IconButton(
                   icon: Icon(Icons.arrow_forward_ios, size: 18, color: Color(0xFF00C9C8)),
                   onPressed: () {
-                    setState(() {
                       if (currentMonth < 12) {
                         currentMonth++;
                       } else {
                         currentMonth = 1;
                         currentYear++;
                       }
-                    });
+                    setState(() {});
                   },
                 ),
               ],
