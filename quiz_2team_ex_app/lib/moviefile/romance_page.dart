@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../model/moviename.dart';
 
@@ -58,124 +59,102 @@ class _RomancepageState extends State<Romancepage> {
   @override
   Widget build(BuildContext context) {
     if (romanceMovies.isEmpty) {
-      return const Scaffold(
-        body: Center(child: Text('영화 데이터가 없습니다.')),
+      return const CupertinoPageScaffold(
+        child: Center(child: Text('영화 데이터가 없습니다.')),
       );
     }
 
-    return Scaffold(
-      body: PageView.builder(
-        controller: pageController,
-        itemCount: romanceMovies.length,
-        onPageChanged: (index) {
-          setState(() {
-            current = index;
-          });
-        },
-        itemBuilder: (context, index) {
-          MovieInfo movie = romanceMovies[index];
+    MovieInfo currentMovie = romanceMovies[current];
 
-          String releaseDateStr =
-              "${movie.firstReleaseDate.year}.${movie.firstReleaseDate.month.toString().padLeft(2, '0')}.${movie.firstReleaseDate.day.toString().padLeft(2, '0')}";
-
-          return Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        movie.imageRoute,
-                        width: 250,
-                        height: 360,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 250,
-                            height: 360,
-                            color: Colors.grey[300],
-                            child: const Icon(Icons.movie, size: 80, color: Colors.grey),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
+    return CupertinoPageScaffold(
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  currentMovie.imageRoute,
+                  width: 250,
+                  height: 350,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
                       width: 250,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8),
+                      height: 350,
+                      color: CupertinoColors.systemGrey5,
+                      child: const Icon(
+                        CupertinoIcons.film,
+                        size: 80,
+                        color: CupertinoColors.systemGrey,
                       ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+
+// 2. ⭐️ 회색 카드 박스 내 텍스트 전용 CupertinoPicker
+              Container(
+                width: 280,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: CupertinoColors.systemGrey,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: CupertinoPicker(
+                  itemExtent: 45.0,
+                  scrollController: FixedExtentScrollController(initialItem: current),
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      current = index; // 텍스트 휠 선택 변경 시 상단 이미지 변경
+                    });
+                  },
+                  children: romanceMovies.map((movie) {
+                    String releaseDateStr =
+                        "${movie.firstReleaseDate.year}.${movie.firstReleaseDate.month.toString().padLeft(2, '0')}.${movie.firstReleaseDate.day.toString().padLeft(2, '0')}";
+
+                    return Center(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             movie.title,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
+                              color: CupertinoColors.black,
                             ),
                           ),
-                          const SizedBox(height: 4),
                           Text(
                             '${movie.mainActor}, $releaseDateStr (${movie.runTimeInMinutes}분)',
                             style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
+                              fontSize: 11,
+                              color: CupertinoColors.black,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: current > 0
-                              ? () {
-                                  pageController.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                              : null,
-                          icon: const Icon(Icons.arrow_back_ios),
-                          color: Colors.deepPurple,
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.chat_bubble_outline),
-                          label: const Text('리뷰 보기'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
-                            foregroundColor: Colors.white,
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: current < romanceMovies.length - 1
-                              ? () {
-                                  pageController.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                              : null,
-                          icon: const Icon(Icons.arrow_forward_ios),
-                          color: Colors.deepPurple,
-                        ),
-                      ],
-                    ),
-                  ],
+                    );
+                  }).toList(),
                 ),
               ),
-            ),
-          );
-        },
+              const SizedBox(height: 16),
+
+              ElevatedButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.chat_bubble_outline),
+                label: Text('리뷰 보기'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  foregroundColor: Colors.white,
+                  shape: StadiumBorder(),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
