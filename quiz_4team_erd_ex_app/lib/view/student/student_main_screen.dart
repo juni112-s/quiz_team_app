@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'student_home_view.dart';
 import 'course_registration_view.dart';
 import 'my_course_list_view.dart';
+import 'student_profile_view.dart';
 
 class StudentMainScreen extends StatefulWidget {
   final String studentName;
@@ -98,7 +99,9 @@ class _StudentMainScreenState extends State<StudentMainScreen> {
         );
       case 3:
       default:
-        return const Center(child: Text("내 정보 화면"));
+        return StudentProfileView(
+          studentId: widget.studentId,
+        );
     }
   }
 }
